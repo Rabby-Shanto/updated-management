@@ -1,10 +1,11 @@
 // Global variables
-let currentPage = 1; // Initially set the current page to 1
+let currentPage = 1;
+let itemsPerPage = 2;
 
 // Function to update the table based on the current page
 function updateTable() {
   let peopleList = JSON.parse(localStorage.getItem('Details')) || [];
-  let itemsPerPage = 2; // Number of items to display per page
+  let itemsPerPage = 2; 
 
   let startIndex = (currentPage - 1) * itemsPerPage;
   let endIndex = startIndex + itemsPerPage;
@@ -39,14 +40,13 @@ function updateTable() {
 
 function deleteData(index) {
     var peopleList = JSON.parse(localStorage.getItem("Details")) || [];
-    var itemsPerPage = 2;
-  
-    peopleList.splice(index, 1);  
+    peopleList.splice(index, 1);
+    console.log(peopleList); 
     var totalPage = Math.ceil(peopleList.length / itemsPerPage);
     if (currentPage > totalPage) {
       currentPage = totalPage;
     }
-
+    localStorage.setItem('Details',JSON.stringify(peopleList));
     updateTable();
     paginationFunction(totalPage, currentPage);
   }
@@ -134,50 +134,41 @@ function updateData(index){
         updateTable()
       }
 
-
-
-
     })
 
 }
 
 
-function searchUser(){
-    var inputName = document.getElementById("nameInput").value.trim().toLowerCase();
-    var inputEmail = document.getElementById("emailInput").value.trim().toLowerCase();
-    var inputPhone = document.getElementById("phoneInput").value.trim().toLowerCase();
-    var inputDate = document.getElementById("dateInput").value.trim().toLowerCase();
-    var genderId = document.getElementById("genderInput").value.trim();
+function searchUser() {
+  var inputName = document.getElementById("nameInput").value.trim().toLowerCase();
+  var inputEmail = document.getElementById("emailInput").value.trim().toLowerCase();
+  var inputPhone = document.getElementById("phoneInput").value.trim().toLowerCase();
+  var inputDate = document.getElementById("dateInput").value.trim().toLowerCase();
+  var genderId = document.getElementById("genderInput").value.trim();
 
+  var existingUser = JSON.parse(localStorage.getItem('Details')) || [];
 
-var existingUser = JSON.parse(localStorage.getItem('Details'))
+  var filteredUsers = existingUser.filter(function(user) {
+    return (
+      user.fnInput.toLowerCase().includes(inputName) &&
+      user.emailInput.toLowerCase().includes(inputEmail) &&
+      user.phoneInput.toLowerCase().includes(inputPhone) &&
+      user.dateInput.includes(inputDate) &&
+      user.selectedRadioInput === genderId
+    );
+  });
 
-var peopleList = [];
+  // Update totalPage based on the filtered users
+  let totalPage = Math.ceil(filteredUsers.length / itemsPerPage);
+  currentPage = 1; // Reset currentPage to 1
 
-for(var i=0; i<existingUser.length; i++){ 
-  var user = existingUser[i]
+  // Calculate the start and end indices for the current page
+  let startIndex = (currentPage - 1) * itemsPerPage;
+  let endIndex = startIndex + itemsPerPage;
+  let displayedItems = filteredUsers.slice(startIndex, endIndex);
 
-
-  if(user.fnInput.toLowerCase().includes(inputName) && user.emailInput.toLowerCase().includes(inputEmail) && user.phoneInput.toLowerCase().includes(inputPhone) && user.dateInput.includes(inputDate) && user.selectedRadioInput === genderId){
-    peopleList.push(user);
-
-    
-    
-  }
-  const resultBody = document.getElementById('userList')
-  resultBody.innerHTML = "";
-  peopleList.forEach(item =>{
-    const row = resultBody.insertRow();
-    row.insertCell().textContent = item.id
-    row.insertCell().textContent = item.fnInput + ' ' + item.lnInput;
-    row.insertCell().textContent = item.emailInput;
-    row.insertCell().textContent = item.phoneInput;
-    row.insertCell().textContent = item.dateInput;
-    row.insertCell().textContent = item.selectedRadioInput;
-    row.insertCell().innerHTML = `<span><a type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="updateData(${item.id})"><i class="fa fa-pencil"></i></a></span><span class="ml-2"><a type="button" class="btn btn-danger"><i class="fa fa-trash" onclick="deleteData(${item.id})"></i></a></span>`;
-  })
-}
-
+  updateTable(displayedItems);
+  paginationFunction(totalPage, currentPage);
 }
 
 // Function to handle pagination click events

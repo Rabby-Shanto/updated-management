@@ -155,8 +155,7 @@ function validateForm(event){
           localStorage.setItem("Details",JSON.stringify(peopleList))
           localStorage.setItem("Logged User",JSON.stringify(usersLoggedin))
 
-          }
-          window.location.href = "signin"
+          } 
           
 }
 
@@ -214,8 +213,7 @@ function login(){
   })
   console.log(user)
   if(user){
-    window.location.href = 'crud.html';
-
+    window.location.href = "crud"
   }
   else{
     alert("invalid useremail and password")
@@ -224,9 +222,3 @@ function login(){
 
 }
 
-
-function logout(){
-  document.getElementById('signup').style.display = 'block'
-  document.getElementById('loginForm').style.display = 'block'
-  document.getElementById('loggedInUser').style.display = 'none'
-}
