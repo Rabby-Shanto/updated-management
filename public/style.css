@@ -1,0 +1,28 @@
+body{
+    background-color: #FBAB7E;
+
+}
+
+.row{
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.col-8{
+    background-color: wheat;
+    padding: 40px;
+    opacity: 0.8;
+    box-shadow:  inset 0 -3em 3em rgba(0, 0, 0, 0.1), 0 0 0 2px rgb(255, 255, 255),
+    0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
+}
+
+.custom-shape-divider-top-1684318942 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+}
+
+.btn{border-radius: 0rem !important;}
