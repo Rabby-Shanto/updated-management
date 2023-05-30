@@ -40,61 +40,15 @@
               <h5><span style="color: red; font-size: 1.5rem;"><b>E</b></span>mployee Management System</h5>
               <hr style="border-top: 1px solid red;">
 
-              <form id="signup" action="/submit" onsubmit="return validateForm(event)" class="form" method="post">
-                  <div class="form-row">
-                    
-                    <div class="form-group col-md-6">
-                        <label for="name">First Name</label>
-                        <input type="text" name="fname" class="form-control" id="fname" placeholder="First Name">
-
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="name">Last Name</label>
-                        <input type="text" name="lname" class="form-control" id="lname" placeholder="Last Name">
-                    </div>
-                  </div>
-                  <div class="form-row">
-                    <div class="form-group col-md-6">
-                      <label for="inputEmail4">Email</label>
-                      <input type="email" name="email" class="form-control" id="email" placeholder="Email">
-                    </div>
-                    <div class="form-group col-md-6">
-                      <label for="inputPhone">Phone</label>
-                      <input type="tel" name="phone" placeholder="Phone" class="form-control" id="number">
-                    </div>
-                  </div>
- 
-                  
+              <form id="adminSign" class="form" onsubmit="adminRegistration()">
                   <div class="form-group">
-                    <label for="date">Date</label>
-                    <input type="text" name="date" class="form-control" id="date" class="date form-control" placeholder="Enter date">
+                    <label for="userName">UserName</label>  
+                    <input type="text" name="username" class="form-control" id="username">           
                   </div>
-                    <label for="inputGender">Gender</label>
-                    <div class="d-flex mb-3">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gender" id="flexRadioDefault1" value="male" checked>
-                        <label class="form-check-label" for="flexRadioDefault1">
-                          Male
-                        </label>
-                      </div>
-                      <div class="form-check mx-2">
-                        <input class="form-check-input" type="radio" name="gender" id="flexRadioDefault2" value="female">
-                        <label class="form-check-label" for="flexRadioDefault2">
-                          Female
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gender" id="flexRadioDefault3" value="other">
-                        <label class="form-check-label" for="flexRadioDefault2">
-                          Other
-                        </label>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="comment">Comment:</label>
-                      <textarea class="form-control" rows="5" id="comment" name="comment"></textarea>
-                    </div>
+                  <div class="form-group">
+                    <label for="email">Email</label>  
+                    <input type="email" name="email" class="form-control" id="email">           
+                  </div>
                     
                   <div class="form-group">
                     <label for="inputPassword4">Password</label>

@@ -1,4 +1,4 @@
-// Global variables
+
 let currentPage = 1;
 let itemsPerPage = 2;
 
@@ -15,7 +15,7 @@ function updateTable() {
   tableElement.innerHTML = '';
 
   if (displayedItems.length > 0) {
-    displayedItems.forEach(function (entry) {
+    displayedItems.forEach(function (entry,index) {
       tableElement.innerHTML += `
         <tr>
           <th scope="row" id="editIndex">${entry.id}</th>
@@ -25,8 +25,8 @@ function updateTable() {
           <td>${entry.dateInput}</td>
           <td>${entry.selectedRadioInput}</td>
           <td>
-            <span><a type="button" data-id="${entry.id}" class="btn btn-primary" data-toggle="modal" data-target="#myModal" data-id="${entry.id}" onclick="updateData(${entry.id})"><i class="fa fa-pencil"></i></a></span>
-            <span class="ml-2"><a type="button" class="btn btn-danger"><i class="fa fa-trash" onclick="deleteData(${entry.id})"></i></a></span>
+            <span><a type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="updateData(${entry.id})"><i class="fa fa-pencil"></i></a></span>
+            <span class="ml-2"><a type="button" class="btn btn-danger"><i class="fa fa-trash" onclick="deleteData(${index})"></i></a></span>
           </td>
         </tr>
       `;
@@ -61,7 +61,6 @@ function updateData(index){
     let newEmail = document.getElementById('email')
     let newDate = document.getElementById('date')
     let newPhone = document.getElementById('number')
-    var radios = document.querySelectorAll('input[name="gender"]');
     let modalSubmit = document.getElementById('modalBtn')
 
     const foundUserIndex = peopleList.findIndex(user => user.id === index)
@@ -158,16 +157,37 @@ function searchUser() {
     );
   });
 
-  // Update totalPage based on the filtered users
   let totalPage = Math.ceil(filteredUsers.length / itemsPerPage);
-  currentPage = 1; // Reset currentPage to 1
+  currentPage = 1;
 
-  // Calculate the start and end indices for the current page
   let startIndex = (currentPage - 1) * itemsPerPage;
   let endIndex = startIndex + itemsPerPage;
   let displayedItems = filteredUsers.slice(startIndex, endIndex);
+  let tableElement = document.getElementById('userList');
+  tableElement.innerHTML = '';
 
-  updateTable(displayedItems);
+  if (displayedItems.length > 0) {
+    displayedItems.forEach(function (entry,index) {
+      tableElement.innerHTML += `
+        <tr>
+          <th scope="row" id="editIndex">${entry.id}</th>
+          <td>${entry.fnInput + ' ' + entry.lnInput}</td>
+          <td>${entry.emailInput}</td>
+          <td>${entry.phoneInput}</td>
+          <td>${entry.dateInput}</td>
+          <td>${entry.selectedRadioInput}</td>
+          <td>
+            <span><a type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="updateData(${entry.id})"><i class="fa fa-pencil"></i></a></span>
+            <span class="ml-2"><a type="button" class="btn btn-danger"><i class="fa fa-trash" onclick="deleteData(${index})"></i></a></span>
+          </td>
+        </tr>
+      `;
+    });
+  } else {
+    tableElement.innerHTML = `<tr><td colspan="7">No data available</td></tr>`;
+  }
+
+  
   paginationFunction(totalPage, currentPage);
 }
 
@@ -221,10 +241,9 @@ function paginationFunction(totalPage, pageNumber) {
 // Example usage
 
 var peopleList = JSON.parse(localStorage.getItem("Details")) || [];
-let totalPage = Math.ceil(peopleList.length / 2); // Calculate the total number of pages
-paginationFunction(totalPage, currentPage); // Generate the initial pagination
-updateTable(); // Update the table with initial data
-
+let totalPage = Math.ceil(peopleList.length / 2);
+paginationFunction(totalPage, currentPage);
+updateTable();
 
 
 var radios = document.querySelectorAll('input[name="gender"]');
@@ -259,3 +278,18 @@ const isPhoneValid = (phone) => {
       const re = /^01[356789]\d{8}$/;
       return re.test(phone)
   }
+
+
+function logout(){
+  var currentUser = JSON.parse(localStorage.getItem('Logged User'))
+  if(currentUser){
+    localStorage.removeItem('Logged User')
+  }
+window.location.href = 'signin.html'
+}
+
+
+
+
+
+

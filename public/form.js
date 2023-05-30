@@ -8,6 +8,7 @@ function validateForm(event){
     var emailInput = document.getElementById('email');
     var phoneInput = document.getElementById('number');
     var passInput = document.getElementById('password');
+    var passInput2 = document.getElementById('password2');
     var dateInput = document.getElementById('date')
     var commentInput = document.getElementById('comment')
     var selectedRadioInput = document.querySelector('input[name="gender"]:checked')
@@ -21,6 +22,7 @@ function validateForm(event){
     var phone = phoneInput.value.trim()
     var date = dateInput.value.trim()
     var password = passInput.value.trim()
+    var password2 = passInput2.value.trim()
     var gender = selectedRadioInput.value.trim()
     var comment = commentInput.value.trim()
     
@@ -82,6 +84,15 @@ function validateForm(event){
         passInput.focus();
         isForamValid = 1
     }
+    else if(password2 === ''){
+      alert("Re enter your password!")
+      isForamValid = 1
+    }
+
+    else if (password !== password2){
+      alert('password not matched');
+      isForamValid = 1
+    }
 
 
     if(isForamValid == 1){
@@ -139,21 +150,12 @@ function validateForm(event){
               passInput : password,
           }
 
-          let userLogin = {
-            id : id,
-            email : email,
-            password : password
-          }
-          
-          let usersLoggedin = []
-          // console.log(data)
-          usersLoggedin.push(userLogin)
 
           
           peopleList.push(data)
 
           localStorage.setItem("Details",JSON.stringify(peopleList))
-          localStorage.setItem("Logged User",JSON.stringify(usersLoggedin))
+          window.location.href = "crud.html"
 
           } 
           
@@ -163,30 +165,6 @@ function validateForm(event){
     // ##################################  END  #################################################
     // ##########################################################################################
 
-const isFnamevalid = (fname) =>{
-  const re = /^[A-Za-z]+$/
-  return re.test(fname)
-}
-
-const isLnamevalid = (lname) =>{
-  const re = /^[A-Za-z]+$/
-  return re.test(lname)
-}
-
-
-const isEmailValid = (email) => {
-    const re = /^[a-z0-9._]+@(gmail|yahoo|outlook)\.(com|co\.uk|in|net)$/;
-    return re.test(email)
-};
-
-const isPhoneValid = (phone) => {
-    const re = /^01[356789]\d{8}$/;
-    return re.test(phone)
-}
-const isPasswordSecure = (password) => {
-    const re = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
-    return re.test(password);
-};
 
 //radio button selection
 var radios = document.querySelectorAll('input[name="gender"]');
@@ -202,23 +180,131 @@ radios.forEach(radio => {
 
 
 
+//admin signup
+function adminRegistration(){
+
+  let admins = JSON.parse(localStorage.getItem('admin'))||[]
+  username = document.getElementById('username').value.trim()
+  email = document.getElementById('email').value.trim()
+  password = document.getElementById('password').value.trim()
+  password2 = document.getElementById('password2').value.trim()
+
+  isFormValid = 0
+  
+  if (username === ''){
+    alert("please enter your username");
+
+    isFormValid = 1
+}
+  else if(!isFnamevalid(username)){
+    alert("please enter a valid user name")
+    isForamValid = 1
+  }
+
+  else if (!isEmailValid(email)){
+    alert("Please enter a valid email address! ");
+    isFormValid = 1
+  }
+  else if (!isPasswordSecure(password)){
+    alert("Please enter a valid password and Password must has at least 8 characters that include at least 1 lowercase character, 1 uppercase characters, 1 number, and 1 special character in (!@#$%^&*)")
+    passInput.focus();
+    isFormValid = 1
+  }
+  else if(password2 === ''){
+    alert("Re enter your password!")
+    isForamValid = 1
+  }
+
+
+  else if (password !== password2){
+  alert('password not matched');
+  isFormValid = 1
+  }
+  else if(admins.forEach(function(user){
+
+    if (user.username === username ){
+      alert("username already exists!")
+      isFormValid = 1
+    }
+    if (user.email === email){
+      alert("email already exists!")
+      isFormValid = 1
+    }
+
+  })){
+    return false
+  }
+
+  if(isFormValid == 1){
+    return false
+  } else{
+    let id;
+    let admins = JSON.parse(localStorage.getItem('admin'))||[]
+    admins.length === 0 ? id = 0 : id = (admins[admins.length - 1].id) + 1
+    let adminUser = {
+      id : id,
+      username : username,
+      email : email,
+      password : password
+    }
+    admins.push(adminUser)
+    localStorage.setItem('admin',JSON.stringify(admins))
+    window.location.reload()
+    alert('Registration is successful,Now Login!')
+    window.location.href = "signin.html"
+
+  }
+
+}
+
+
+//admin login
+
 function login(){
   var Loginemail = document.getElementById('emailLogin').value.trim()
   var Loginpassword = document.getElementById('passwordLogin').value.trim()
 
-  var users = JSON.parse(localStorage.getItem('Logged User'))||[];
+  var users = JSON.parse(localStorage.getItem('admin'))||[];
   var user = users.find(function(u){
     return u.email === Loginemail && u.password === Loginpassword
     
   })
   console.log(user)
   if(user){
-    window.location.href = "crud"
+    window.location.href = "index.html"
   }
   else{
-    alert("invalid useremail and password")
+    alert("invalid useremail or password")
     return false;
   }
 
 }
 
+
+const isFnamevalid = (fname) =>{
+  const re = /^[A-Za-z]+$/
+  return re.test(fname)
+}
+
+const isLnamevalid = (lname) =>{
+  const re = /^[A-Za-z]+$/
+  return re.test(lname)
+}
+const isUnamevalid = (username) =>{
+  const re = /^[A-Za-z]+$/
+  return re.test(username)
+}
+
+const isEmailValid = (email) => {
+    const re = /^[a-z0-9._]+@(gmail|yahoo|outlook)\.(com|co\.uk|in|net)$/;
+    return re.test(email)
+};
+
+const isPhoneValid = (phone) => {
+    const re = /^01[356789]\d{8}$/;
+    return re.test(phone)
+}
+const isPasswordSecure = (password) => {
+    const re = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+    return re.test(password);
+};
