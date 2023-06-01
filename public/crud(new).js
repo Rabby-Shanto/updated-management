@@ -4,19 +4,28 @@ let itemsPerPage = 2;
 
 // Function to update the table based on the current page
 function updateTable() {
+
+  if(localStorage.getItem('username') && localStorage.getItem('email')){
   let peopleList = JSON.parse(localStorage.getItem('Details')) || [];
+  var loggedUser = localStorage.getItem('email')
+
+  var data  = peopleList.filter((v)=> v.admin == loggedUser
+)
+ 
   let itemsPerPage = 2; 
 
   let startIndex = (currentPage - 1) * itemsPerPage;
   let endIndex = startIndex + itemsPerPage;
-  let displayedItems = peopleList.slice(startIndex, endIndex);
+  let displayedItems = data.slice(startIndex, endIndex);
 
   let tableElement = document.getElementById('userList');
   tableElement.innerHTML = '';
 
   if (displayedItems.length > 0) {
     displayedItems.forEach(function (entry,index) {
-      tableElement.innerHTML += `
+      if(entry.admin == localStorage.getItem('email')){
+        // localStorage.getItem('email')
+        tableElement.innerHTML += `
         <tr>
           <th scope="row" id="editIndex">${entry.id}</th>
           <td>${entry.fnInput + ' ' + entry.lnInput}</td>
@@ -26,27 +35,41 @@ function updateTable() {
           <td>${entry.selectedRadioInput}</td>
           <td>
             <span><a type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="updateData(${entry.id})"><i class="fa fa-pencil"></i></a></span>
-            <span class="ml-2"><a type="button" class="btn btn-danger"><i class="fa fa-trash" onclick="deleteData(${index})"></i></a></span>
+            <span class="ml-2"><a type="button" class="btn btn-danger"><i class="fa fa-trash" onclick="deleteData(${entry.id})"></i></a></span>
           </td>
         </tr>
       `;
+
+      } else{
+        tableElement.innerHTML = `<tr><td colspan="7">Employee not added! Add employee</td></tr>`;
+      }
+
     });
   } else {
     tableElement.innerHTML = `<tr><td colspan="7">No data available</td></tr>`;
   }
+} else{
+  var logout = document.getElementById('logout')
+  logout.style.display = "none"
+  alert("You are not logged in!")
+  window.location.href = "signin.html"
 }
-
+}
 
 
 function deleteData(index) {
     var peopleList = JSON.parse(localStorage.getItem("Details")) || [];
-    peopleList.splice(index, 1);
-    console.log(peopleList); 
-    var totalPage = Math.ceil(peopleList.length / itemsPerPage);
+    var loggedUser = localStorage.getItem('email')
+
+    var data  = peopleList.filter((v)=> v.admin == loggedUser )
+
+    data.splice(data, index);
+    
+    var totalPage = Math.ceil(data.length / itemsPerPage);
     if (currentPage > totalPage) {
       currentPage = totalPage;
     }
-    localStorage.setItem('Details',JSON.stringify(peopleList));
+    localStorage.setItem('Details',JSON.stringify(data));
     updateTable();
     paginationFunction(totalPage, currentPage);
   }
@@ -125,8 +148,9 @@ function updateData(index){
         return false;
       }
       else{
+        admin = localStorage.getItem('email')
             
-        var updatedData = {id : index, fnInput : editFname,lnInput : editLname,emailInput: editEmail, dateInput: editDate,phoneInput : editPhone,selectedRadioInput: editGender};
+        var updatedData = {admin : admin, id : index, fnInput : editFname,lnInput : editLname,emailInput: editEmail, dateInput: editDate,phoneInput : editPhone,selectedRadioInput: editGender};
 
         peopleList[foundUserIndex] = updatedData
         localStorage.setItem('Details',JSON.stringify(peopleList))
@@ -146,8 +170,11 @@ function searchUser() {
   var genderId = document.getElementById("genderInput").value.trim();
 
   var existingUser = JSON.parse(localStorage.getItem('Details')) || [];
+  var loggedUser = localStorage.getItem('email')
 
-  var filteredUsers = existingUser.filter(function(user) {
+  var data  = existingUser.filter((v)=> v.admin == loggedUser )
+
+  var filteredUsers = data.filter(function(user) {
     return (
       user.fnInput.toLowerCase().includes(inputName) &&
       user.emailInput.toLowerCase().includes(inputEmail) &&
@@ -241,7 +268,10 @@ function paginationFunction(totalPage, pageNumber) {
 // Example usage
 
 var peopleList = JSON.parse(localStorage.getItem("Details")) || [];
-let totalPage = Math.ceil(peopleList.length / 2);
+var loggedUser = localStorage.getItem('email')
+
+var data  = peopleList.filter((v)=> v.admin == loggedUser)
+let totalPage = Math.ceil(data.length / itemsPerPage);
 paginationFunction(totalPage, currentPage);
 updateTable();
 
@@ -281,15 +311,8 @@ const isPhoneValid = (phone) => {
 
 
 function logout(){
-  var currentUser = JSON.parse(localStorage.getItem('Logged User'))
-  if(currentUser){
-    localStorage.removeItem('Logged User')
-  }
+  localStorage.removeItem("username")
+  localStorage.removeItem("email")
+
 window.location.href = 'signin.html'
 }
-
-
-
-
-
-

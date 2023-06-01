@@ -2,13 +2,15 @@ const formE1 = document.querySelector('.form');
 
 
 details = [];
+
+function randomInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 function validateForm(event){
     var fnInput = document.getElementById('fname');
     var lnInput = document.getElementById('lname');
     var emailInput = document.getElementById('email');
     var phoneInput = document.getElementById('number');
-    var passInput = document.getElementById('password');
-    var passInput2 = document.getElementById('password2');
     var dateInput = document.getElementById('date')
     var commentInput = document.getElementById('comment')
     var selectedRadioInput = document.querySelector('input[name="gender"]:checked')
@@ -21,16 +23,11 @@ function validateForm(event){
     var email = emailInput.value.trim()
     var phone = phoneInput.value.trim()
     var date = dateInput.value.trim()
-    var password = passInput.value.trim()
-    var password2 = passInput2.value.trim()
     var gender = selectedRadioInput.value.trim()
     var comment = commentInput.value.trim()
     
 
     console.log(gender)
-    // ##########################################################################################
-    // #################################### Validation Starts ###################################
-    // ##########################################################################################
 
     isForamValid = 0
 
@@ -79,20 +76,6 @@ function validateForm(event){
         isForamValid = 1
       }
 
-    else if (!isPasswordSecure(password)){
-        alert("Please enter a valid password and Password must has at least 8 characters that include at least 1 lowercase character, 1 uppercase characters, 1 number, and 1 special character in (!@#$%^&*)")
-        passInput.focus();
-        isForamValid = 1
-    }
-    else if(password2 === ''){
-      alert("Re enter your password!")
-      isForamValid = 1
-    }
-
-    else if (password !== password2){
-      alert('password not matched');
-      isForamValid = 1
-    }
 
 
     if(isForamValid == 1){
@@ -127,43 +110,35 @@ function validateForm(event){
             console.error('Error:', error);
           });
 
-          // ##########################################################################################
-          // ######################################## END #############################################
-          // ##########################################################################################
-
-          // ##########################################################################################
-          // ############################  Send data to Local Storage  ################################
-          // ##########################################################################################
 
           console.log(gender)
-          let id;
           let peopleList = JSON.parse(localStorage.getItem('Details'))||[];
-          peopleList.length === 0 ? id = 0 : id = (peopleList[peopleList.length - 1].id) + 1
+
+          admin = localStorage.getItem('email')
           let data = {
-              id : id,
+              admin : admin,
+              id : randomInteger(2000,100000000),
               fnInput : fname,
               lnInput : lname,
               emailInput : email,
               phoneInput : phone,
               dateInput : date,
               selectedRadioInput : gender,
-              passInput : password,
           }
+          
 
 
           
           peopleList.push(data)
 
           localStorage.setItem("Details",JSON.stringify(peopleList))
+          
           window.location.href = "crud.html"
 
           } 
           
 }
 
-    // ##########################################################################################
-    // ##################################  END  #################################################
-    // ##########################################################################################
 
 
 //radio button selection
@@ -184,21 +159,20 @@ radios.forEach(radio => {
 function adminRegistration(){
 
   let admins = JSON.parse(localStorage.getItem('admin'))||[]
-  username = document.getElementById('username').value.trim()
-  email = document.getElementById('email').value.trim()
-  password = document.getElementById('password').value.trim()
-  password2 = document.getElementById('password2').value.trim()
+  let username = document.getElementById('username').value.trim()
+  let email = document.getElementById('email').value.trim()
+  let password = document.getElementById('password').value.trim()
+  let password2 = document.getElementById('password2').value.trim()
 
   isFormValid = 0
   
   if (username === ''){
     alert("please enter your username");
-
     isFormValid = 1
 }
-  else if(!isFnamevalid(username)){
+  else if(!isUnamevalid(username)){
     alert("please enter a valid user name")
-    isForamValid = 1
+    isFormValid = 1
   }
 
   else if (!isEmailValid(email)){
@@ -212,7 +186,7 @@ function adminRegistration(){
   }
   else if(password2 === ''){
     alert("Re enter your password!")
-    isForamValid = 1
+    isFormValid = 1
   }
 
 
@@ -249,8 +223,6 @@ function adminRegistration(){
     }
     admins.push(adminUser)
     localStorage.setItem('admin',JSON.stringify(admins))
-    window.location.reload()
-    alert('Registration is successful,Now Login!')
     window.location.href = "signin.html"
 
   }
@@ -271,7 +243,24 @@ function login(){
   })
   console.log(user)
   if(user){
-    window.location.href = "index.html"
+    if(localStorage.getItem('username') && localStorage.getItem('email')){
+      alert("An user in already logged in to current session")
+      return false
+    }
+
+    else{
+
+      alert('Login Successful!')
+      let currentUser = users.filter((v)=>{
+        return v.email == Loginemail && v.password == Loginpassword
+      })[0]
+      
+      localStorage.setItem('username',currentUser.username)
+      localStorage.setItem('email',currentUser.email)
+      window.location.href = "index.html"
+
+    }
+
   }
   else{
     alert("invalid useremail or password")
@@ -308,3 +297,6 @@ const isPasswordSecure = (password) => {
     const re = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
     return re.test(password);
 };
+
+
+

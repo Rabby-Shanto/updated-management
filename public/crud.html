@@ -31,13 +31,18 @@
 
 </head>
 <body>
-<div style="right: 0%;">
-  <button type="submit" onclick="logout()" class="btn btn-primary mt-3 " >Logout</button>
 
-</div>
   
     <div class="container">
+      <div >
+        <h5>logged in as: </h5>
+        <script>
+          document.write(localStorage.getItem("username"))
+        </script>
+        <button type="submit" onclick="logout()" id="logout" class="btn btn-primary mt-3 " >Logout</button>
+      </div>
         <div class="row main_row">
+          
             <div class="col">
               <div class="row">
                 <input type="text" class="form-control col-md-2 ml-3" id="nameInput" placeholder="Search by Name">
