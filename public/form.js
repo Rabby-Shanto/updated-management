@@ -111,6 +111,9 @@ function validateForm(event){
           });
 
 
+
+
+
           console.log(gender)
           let peopleList = JSON.parse(localStorage.getItem('Details'))||[];
 
@@ -154,6 +157,18 @@ radios.forEach(radio => {
 });
 
 
+function fetchEmployeeData() {
+  fetch("data.json")
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Fetched employee data:", data);
+    })
+    .catch((error) => {
+      console.error("Error occurred while fetching employee data:", error);
+    });
+}
+
+fetchEmployeeData()
 
 //admin signup
 function adminRegistration(){

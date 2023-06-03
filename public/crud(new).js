@@ -62,14 +62,18 @@ function deleteData(index) {
     var loggedUser = localStorage.getItem('email')
 
     var data  = peopleList.filter((v)=> v.admin == loggedUser )
+    const userIndex = data.findIndex(user => user.id === index);
+    const filteredUsers = peopleList.filter(user =>user.id !== index)
+    data.splice(userIndex,1)
 
-    data.splice(data, index);
+
     
     var totalPage = Math.ceil(data.length / itemsPerPage);
     if (currentPage > totalPage) {
       currentPage = totalPage;
     }
-    localStorage.setItem('Details',JSON.stringify(data));
+    localStorage.setItem('Details', JSON.stringify(filteredUsers));
+
     updateTable();
     paginationFunction(totalPage, currentPage);
   }
@@ -190,11 +194,12 @@ function searchUser() {
   let startIndex = (currentPage - 1) * itemsPerPage;
   let endIndex = startIndex + itemsPerPage;
   let displayedItems = filteredUsers.slice(startIndex, endIndex);
+  console.log(displayedItems)
   let tableElement = document.getElementById('userList');
   tableElement.innerHTML = '';
 
   if (displayedItems.length > 0) {
-    displayedItems.forEach(function (entry,index) {
+    displayedItems.forEach(function (entry) {
       tableElement.innerHTML += `
         <tr>
           <th scope="row" id="editIndex">${entry.id}</th>
@@ -205,7 +210,7 @@ function searchUser() {
           <td>${entry.selectedRadioInput}</td>
           <td>
             <span><a type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="updateData(${entry.id})"><i class="fa fa-pencil"></i></a></span>
-            <span class="ml-2"><a type="button" class="btn btn-danger"><i class="fa fa-trash" onclick="deleteData(${index})"></i></a></span>
+            <span class="ml-2"><a type="button" class="btn btn-danger"><i class="fa fa-trash" onclick="deleteData(${entry.id})"></i></a></span>
           </td>
         </tr>
       `;
@@ -214,7 +219,6 @@ function searchUser() {
     tableElement.innerHTML = `<tr><td colspan="7">No data available</td></tr>`;
   }
 
-  
   paginationFunction(totalPage, currentPage);
 }
 
@@ -265,7 +269,6 @@ function paginationFunction(totalPage, pageNumber) {
     paginationElement.innerHTML = listTag;
   }
 
-// Example usage
 
 var peopleList = JSON.parse(localStorage.getItem("Details")) || [];
 var loggedUser = localStorage.getItem('email')
